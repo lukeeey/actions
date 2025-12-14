@@ -165,6 +165,8 @@ async function saveOfflineMetadata(inp: { inputs: Inputs, repoData: Repo }) {
         supportedBedrockVersions
     };
 
+    console.log(metadata)
+
     const data = Buffer.from(JSON.stringify(metadata, null, 4), 'utf8');
     fs.writeFileSync('metadata.json', data);
 
