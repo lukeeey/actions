@@ -41594,12 +41594,10 @@ async function saveOfflineMetadata(inp) {
         };
     }
     const minecraftVersions = core.getInput('minecraftVersions', { required: false });
-    console.log(minecraftVersions);
     let supportedJavaVersions = [];
     let supportedBedrockVersions = [];
     if (minecraftVersions) {
         const decoded = Buffer.from(minecraftVersions, 'base64').toString('utf8');
-        console.log(decoded);
         const parsedMinecraftVersions = JSON.parse(decoded);
         supportedJavaVersions = parsedMinecraftVersions.java || [];
         supportedBedrockVersions = parsedMinecraftVersions.bedrock || [];
@@ -41614,8 +41612,6 @@ async function saveOfflineMetadata(inp) {
         supportedJavaVersions,
         supportedBedrockVersions
     };
-    console.log("metadata:");
-    console.log(JSON.stringify(metadata));
     const data = Buffer.from(JSON.stringify(metadata, null, 4), 'utf8');
     fs_1.default.writeFileSync('metadata.json', data);
     console.log(`Saved metadata to metadata.json`);
