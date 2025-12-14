@@ -147,7 +147,9 @@ async function saveOfflineMetadata(inp: { inputs: Inputs, repoData: Repo }) {
     let supportedBedrockVersions = [];
 
     if (minecraftVersions) {
-        const parsedMinecraftVersions = JSON.parse(minecraftVersions);
+        const decoded = Buffer.from(minecraftVersions, 'base64').toString('utf8');
+        const parsedMinecraftVersions = JSON.parse(decoded);
+
         supportedJavaVersions = parsedMinecraftVersions.java || [];
         supportedBedrockVersions = parsedMinecraftVersions.bedrock || [];
     }
