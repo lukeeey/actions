@@ -28,4 +28,6 @@ export interface Metadata {
         message: string;
     }[];
     downloads: Record<string, FileInfo>;
+    supportedJavaVersions: string[];
+    supportedBedrockVersions: string[];
 }

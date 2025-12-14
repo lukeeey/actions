@@ -99,6 +99,10 @@ inputs:
         description: Whether or not to update the release data in repository variable storage.
         required: false
         default: true
+    minecraftVersions:
+        description: Supported Bedrock & Java versions
+        required: false
+        default: ''
 
 outputs:
     releaseID:

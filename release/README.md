@@ -65,6 +65,7 @@ on:
 | `tagPrefix`          | The prefix to use for the tag. Defaults to the branch if not specified.                                                                                | `auto`  | `false`  |
 | `tagSeparator`       | The separator to use between the tag prefix and the tag base. Defaults to "-" if not specified.                                                        | `-`     | `false`  |
 | `updateReleaseData`  | Whether or not to update the release data in repository variable storage. Defaults to true if not specified                                            | `true`  | `false`  | 
+| `minecraftVersions`  | A list of supported Bedrock & Java versions                                                                                                            |       | `false` |
 
 ### Outputs
 

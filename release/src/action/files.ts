@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import * as core from '@actions/core';
 import * as parse from "../util/parse";
 import { Inputs } from "../types/inputs";
 import { ReleaseResponse } from "src/types/release";
@@ -8,29 +9,29 @@ import { FileInfo, Metadata, UploadInfo } from "../types/files";
 import { Readable } from "stream";
 import { OctokitApi } from "../types/auth";
 
-export async function uploadFiles(inp: {api: OctokitApi, inputs: Inputs, release: ReleaseResponse | null, repoData: Repo}) {
+export async function uploadFiles(inp: { api: OctokitApi, inputs: Inputs, release: ReleaseResponse | null, repoData: Repo }) {
     const { api, inputs, release, repoData } = inp;
 
     if (inputs.release.metadata) {
-        await saveOfflineMetadata({inputs, repoData});
+        await saveOfflineMetadata({ inputs, repoData });
     }
 
     if (!release) {
         return;
     }
 
-    const uploads = await uploadProvidedFiles({api, inputs, release, repoData});
+    const uploads = await uploadProvidedFiles({ api, inputs, release, repoData });
 
     if (!inputs.release.info) {
         return;
     }
 
-    await uploadReleaseData({api, inputs, release, repoData, uploads});
+    await uploadReleaseData({ api, inputs, release, repoData, uploads });
 
     return;
 }
 
-async function uploadProvidedFiles(inp: {api: OctokitApi, inputs: Inputs, release: ReleaseResponse, repoData: Repo}): Promise<Record<string, UploadInfo>> {
+async function uploadProvidedFiles(inp: { api: OctokitApi, inputs: Inputs, release: ReleaseResponse, repoData: Repo }): Promise<Record<string, UploadInfo>> {
     const { api, inputs, release, repoData } = inp;
     const { owner, repo } = repoData;
     const { files } = inputs;
@@ -83,7 +84,7 @@ async function uploadProvidedFiles(inp: {api: OctokitApi, inputs: Inputs, releas
     return uploads;
 }
 
-async function uploadReleaseData(inp: {api: OctokitApi, inputs: Inputs, release: ReleaseResponse, repoData: Repo, uploads: Record<string, UploadInfo>}) {
+async function uploadReleaseData(inp: { api: OctokitApi, inputs: Inputs, release: ReleaseResponse, repoData: Repo, uploads: Record<string, UploadInfo> }) {
     const { api, inputs, release, repoData, uploads } = inp;
 
     const { owner, repo, branch } = repoData;
@@ -121,7 +122,7 @@ async function uploadReleaseData(inp: {api: OctokitApi, inputs: Inputs, release:
     console.log(`Uploaded release data to ${release.data.html_url}`);
 }
 
-async function saveOfflineMetadata(inp: {inputs: Inputs, repoData: Repo}) {
+async function saveOfflineMetadata(inp: { inputs: Inputs, repoData: Repo }) {
     const { inputs, repoData } = inp;
 
     const downloads: Record<string, FileInfo> = {};
@@ -140,13 +141,26 @@ async function saveOfflineMetadata(inp: {inputs: Inputs, repoData: Repo}) {
         };
     }
 
+    const minecraftVersions = core.getInput('minecraftVersions', { required: false });
+
+    let supportedJavaVersions = [];
+    let supportedBedrockVersions = [];
+
+    if (minecraftVersions) {
+        const parsedMinecraftVersions = JSON.parse(minecraftVersions);
+        supportedJavaVersions = parsedMinecraftVersions.java || [];
+        supportedBedrockVersions = parsedMinecraftVersions.bedrock || [];
+    }
+
     const metadata: Metadata = {
         project: inputs.release.project,
         repo: repoData.repo,
         version: inputs.release.version,
         number: parse.isPosInteger(inputs.tag.base) ? parseInt(inputs.tag.base) : inputs.tag.base,
         changes: inputs.changes.map(c => ({ commit: c.commit, summary: c.summary, message: c.message })),
-        downloads
+        downloads,
+        supportedJavaVersions,
+        supportedBedrockVersions
     };
 
     const data = Buffer.from(JSON.stringify(metadata, null, 4), 'utf8');
