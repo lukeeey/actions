@@ -43,6 +43,7 @@ export namespace Inputs {
         readonly update_release_data: boolean;
         readonly project: string;
         readonly version: string;
+        readonly minecraftVersions: string;
     }
 }
 

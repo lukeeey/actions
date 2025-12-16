@@ -141,13 +141,11 @@ async function saveOfflineMetadata(inp: { inputs: Inputs, repoData: Repo }) {
         };
     }
 
-    const minecraftVersions = core.getInput('minecraftVersions', { required: false });
-
     let supportedJavaVersions = [];
     let supportedBedrockVersions = [];
 
-    if (minecraftVersions) {
-        const decoded = Buffer.from(minecraftVersions, 'base64').toString('utf8');
+    if (inputs.release.minecraftVersions) {
+        const decoded = Buffer.from(inputs.release.minecraftVersions, 'base64').toString('utf8');
         const parsedMinecraftVersions = JSON.parse(decoded);
 
         supportedJavaVersions = parsedMinecraftVersions.java || [];

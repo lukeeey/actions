@@ -105,9 +105,10 @@ async function getRelease(inp: {api: OctokitApi, changes: Inputs.Change[], tag: 
     const update_release_data = core.getBooleanInput('updateReleaseData');
     const project = core.getInput('releaseProject') === 'auto' ? repo.toLowerCase() : core.getInput('releaseProject');
     const version = core.getInput('releaseVersion') === 'auto' ? tag.base : core.getInput('releaseVersion');
+    const minecraftVersions = core.getInput('minecraftVersions');
 
     console.log(`Using release name ${name} with prerelease: ${prerelease}, draft: ${draft}, generate release notes: ${generate_release_notes}, discussion category: ${discussion_category_name}, make latest: ${make_latest}, include release info: ${info}`);
-    return { name, body, prerelease, draft, generate_release_notes, discussion_category_name, make_latest, info, hook, enabled, metadata, update_release_data, project, version };
+    return { name, body, prerelease, draft, generate_release_notes, discussion_category_name, make_latest, info, hook, enabled, metadata, update_release_data, project, version, minecraftVersions };
 }
 
 async function getSuccess(inp: {api: OctokitApi, repoData: Repo}): Promise<boolean> {
